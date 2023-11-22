@@ -16,7 +16,6 @@ const { ServiceInstance } = require('twilio/lib/rest/chat/v1/service');
 const app = express();
 const port = process.env.PORT || 3000;
 
-
 function call (customer_number, ctx){
    console.log(ctx)
    bot.telegram.sendMessage(ctx.chat.id, `call ongoing...\n Calling ${customer_number} \n please wait...`, {})
