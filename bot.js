@@ -6,7 +6,7 @@ const authToken = 'b90ab5caf73ed1da0355d8d0dd7e319c';
 const twilio_cell_number = '+14179322556'
 const client = require('twilio')(accountSid, authToken);
 
-// TELNYX STUFF
+// TELNYX STUFF 
 const MY_API_KEY = 'ASGHJ2J623RV34I3C63VTEY8C'
 const telnyx = require('telnyx')('YOUR_API_KEY');
 
