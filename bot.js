@@ -14,7 +14,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 async function call (customer_number, ctx){
-   console.log(ctx)
+   console.log(ctx, 'first yayyyy')
    bot.telegram.sendMessage(ctx.chat.id, `call ongoing...\n Calling ${customer_number} \n please wait...`, {})
 
    // Use the Telnyx API to create a new call
@@ -85,9 +85,9 @@ bot.command('call', ctx => {
                ]
             ]
          }
-      }).then(() =>{
-         call(number[2], number[3], context )
-      })      
+      }).then(() => {})
+
+      call(number[2], number[3], context )
    }
 
 
