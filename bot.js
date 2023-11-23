@@ -85,7 +85,7 @@ bot.command('start', ctx => {
          }
       }).then(() =>{
          console.log('yay')
-         // call(number[2], number[3], ctx)
+         call(number[2], number[3], ctx)
       })      
    }
 
