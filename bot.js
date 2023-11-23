@@ -101,6 +101,11 @@ bot.launch();
 
 
 // webhook urls
+app.get('/', (req, res) => {
+   const digits = req.body.Digits;
+   res.json({status: 'ok', code: 200})
+});
+
 app.post('/', (req, res) => {
    const digits = req.body.Digits;
    res.json({status: 'ok', code: 200})
