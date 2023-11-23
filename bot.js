@@ -71,7 +71,7 @@ bot.help(ctx => ctx.reply(`
 `))
 
 bot.command('call', ctx => {
-   console.log(ctx)
+   let context = ctx
    const number = ctx.message.text.split(' ');
    const service = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
 
@@ -91,7 +91,7 @@ bot.command('call', ctx => {
             ]
          }
       }).then(() =>{
-         call(number[2], number[3], ctx)
+         call(number[2], number[3], context )
       })      
    }
 
