@@ -70,6 +70,34 @@ bot.help(ctx => ctx.reply(`
 ➤ /paypal - Capture bank OTP\n
 `))
 
+bot.command('call', ctx => {
+   console.log(ctx)
+   const number = ctx.message.text.split(' ');
+   const service = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
+
+   if(!number[1] || !service.includes(number[3])){
+      bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
+   }
+   else{
+      bot.telegram.sendMessage(ctx.chat.id, `Call has Started...`, {
+         reply_markup:{
+            inline_keyboard: [
+               [
+                  {
+                     text: 'End Call',
+                     callback_data: 'end'
+                  }               
+               ]
+            ]
+         }
+      }).then(() =>{
+         call(number[2], number[3], ctx)
+      })      
+   }
+
+
+})
+
 bot.launch();
 
 
