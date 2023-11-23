@@ -25,11 +25,6 @@ async function call (customer_number, ctx){
       webhook_url: WEBHOOK_URL
    });
 
-   call.answered({
-
-   })
-
-
 }
 
 
@@ -109,7 +104,7 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
    const digits = req.body;
-   console.log(digits)
+   console.log(yayyyy)
    res.json({status: 'ok', code: 200})
 });
 
