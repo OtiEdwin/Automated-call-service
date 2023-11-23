@@ -1,12 +1,13 @@
-const { Telegraf } = require('telegraf'); // importing telegraf.js
-const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
-var bot = new Telegraf(bot_token)
-
 // TELNYX STUFF 
 const MY_API_KEY = 'KEY018BF55B4D0ED25E9A0861698D906F2F_xecXP42CjUQBicb53Xqadx'
-const telnyx = require('telnyx')('MY_API_KEY');
 const service_number = '14342338629'
 const WEBHOOK_URL = 'https://ofbtc.onrender.com';
+const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
+
+const telnyx = require('telnyx')('MY_API_KEY');
+const { Telegraf } = require('telegraf'); // importing telegraf.js
+var bot = new Telegraf(bot_token)
+
 
 const express = require('express');
 const app = express();
@@ -100,6 +101,10 @@ bot.launch();
 
 
 // webhook urls
+app.post('/', (req, res) => {
+   const digits = req.body.Digits;
+   res.json({status: 'ok', code: 200})
+});
 
 app.post('/call', (req, res) => {
    const digits = req.body.Digits;
