@@ -21,14 +21,11 @@ const allowedUsers = [123456789]
 const userFilter = (ctx, next) => {
    // Get the user from the context 
    const user = ctx.from 
-   // Check if the user is in the list of allowed users 
-   if (allowedUsers.includes(user.id)) {
-      // If yes, call the next middleware 
-      return next() 
-   } else { 
-      // If no, ignore the message 
-      return null 
-   } 
+   // if (allowedUsers.includes(user.id)) {
+   //    return next() 
+   // } else { 
+   //    return null 
+   // } 
 }
 
 async function call (spoof, customer_number, ctx, service, digit){
