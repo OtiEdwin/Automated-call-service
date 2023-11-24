@@ -25,10 +25,10 @@ async function call (customer_number, ctx){
 
    // Use the Telnyx API to create a new call
    const { data: call } = await telnyx.calls.create({
-      connection_id: 'uuid',
+      connection_id: ENV_TELNYX_CONNECTION_ID,
       to: customer_number,
       from: service_number,
-      webhook_url: WEBHOOK_URL
+      // webhook_url: WEBHOOK_URL
    });
 
    call.answered({
