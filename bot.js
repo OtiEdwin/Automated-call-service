@@ -39,7 +39,7 @@ async function call (spoof, customer_number, ctx, service, digit){
          answering_machine_detection: 'detect'
       });      
    } catch (error) {
-      console.log("your error is: ", error)
+      console.log("your error is: ", error.message)
    }
 
 }
@@ -117,12 +117,6 @@ app.post('/', (req, res) => {
    const body = req.body;   
    res.json({status: 'ok', code: 200})
 });
-
-// app.post('/call', (req, res) => {
-//    const body = req.body;
-//    console.log(body)
-//    res.json(req.body)
-// });
 
 app.post('/answered', (req, res) => {
    // Get the call_control_id from the webhook data
