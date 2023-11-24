@@ -26,6 +26,7 @@ const userFilter = (ctx, next) => {
    // } else { 
    //    return null 
    // } 
+   next()
 }
 
 async function call (spoof, customer_number, ctx, service, digit){
