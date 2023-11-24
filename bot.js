@@ -30,7 +30,9 @@ async function call (spoof, customer_number, ctx, service, digit){
                ]
             ]
          }
-      })   
+      }) 
+      bot.action('end', ctx => ctx.telegram.sendMessage(ctx.from.id, `❌ Call ended`, {}) )
+
       const { data: call } = await telnyx.calls.create({
          connection_id: alt_control_id,
          to: `+${customer_number}`,
