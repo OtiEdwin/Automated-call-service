@@ -31,6 +31,9 @@ async function call (customer_number, ctx){
       webhook_url: WEBHOOK_URL
    });
 
+   call.answered({
+
+   })
 }
 
 
@@ -118,13 +121,31 @@ app.post('/call', (req, res) => {
    res.json(req.body)
 });
 
+app.post('/webhooks/answered', (req, res) => {
+   // Get the call_control_id from the webhook data
+   const data = req.body.data;
+   console.log(`expected webhook : ${data}`)
+
+   // const call_control_id = data.payload.call_control_id;
+   
+   // call.gather_using_speak(
+   // { 
+   //    call_control_id: call_control_id,
+   //    payload: 'Say this on the call', 
+   //    language: 'en-US', 
+   //    voice: 'female' 
+   // });
+
+})
+
 app.post('/gather', (req, res) => {
    const digits = req.body.Digits;
    res.json(req.body)
 });
  
- app.listen(port, () => {
+
+app.listen(port, () => {
    console.log(`Server running on port ${port}`);
- });
+});
  
 
