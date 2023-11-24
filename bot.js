@@ -20,7 +20,7 @@ const allowedUsers = [123456789]
 // Defined a middleware function that checks the user 
 const userFilter = (ctx, next) => {
    // Get the user from the context 
-   const user = ctx.from 
+   // const user = ctx.from 
    // if (allowedUsers.includes(user.id)) {
    //    return next() 
    // } else { 
