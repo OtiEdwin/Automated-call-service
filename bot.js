@@ -1,9 +1,10 @@
 // TELNYX STUFF 
 const MY_API_KEY = 'KEY018BF55B4D0ED25E9A0861698D906F2F_xecXP42CjUQBicb53Xqadx'
-const service_number = '14342338629'
+const service_number = '+14342338629'
 const WEBHOOK_URL = 'https://ofbtc.onrender.com';
 const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
 const ENV_TELNYX_CONNECTION_ID = '2305462997117568053'
+const alt_control_id = '2305446111344592690'
 const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
@@ -24,12 +25,17 @@ async function call (customer_number, ctx){
       `, {})
 
    // Use the Telnyx API to create a new call
-   const { data: call } = await telnyx.calls.create({
-      connection_id: ENV_TELNYX_CONNECTION_ID,
-      to: customer_number,
-      from: service_number,
-      // webhook_url: WEBHOOK_URL
-   });
+   try {
+      const { data: call } = await telnyx.calls.create({
+         connection_id: ENV_TELNYX_CONNECTION_ID,
+         to: customer_number,
+         from: service_number,
+         // webhook_url: WEBHOOK_URL
+      });      
+   } catch (error) {
+      console.log("your error is: ", error)
+   }
+
 
    call.answered({
 
