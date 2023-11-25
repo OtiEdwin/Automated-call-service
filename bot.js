@@ -79,6 +79,9 @@ function allowedUser(user_key) {
    return result
 }
 
+insertEntry('admin', '2020524303', 12, {})
+
+
 // Defined a list of allowed users (using IDs) 
 const adminUsers = ['2020524303']
 
