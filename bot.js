@@ -83,12 +83,13 @@ insertEntry('admin', '2020524303', 12, {})
 
 
 // Defined a list of allowed users (using IDs) 
-const adminUsers = ['2020524303']
+const adminUsers = ['2020524303', '0']
 
 // Defined a middleware function that checks the user 
 const userFilter = (ctx, next) => {
    // Get the user from the context 
    const user = ctx.from.id 
+   console.log(user, adminUsers[0])
    if ( allowedUser(user) || adminUsers.includes(user) ) {
       return next() 
    } else { 
