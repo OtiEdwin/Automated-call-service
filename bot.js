@@ -90,7 +90,7 @@ const userFilter = (ctx, next) => {
    // Get the user from the context 
    const user = ctx.from.id 
    console.log(user, adminUsers[0])
-   if ( allowedUser(user) || adminUsers.includes(user) ) {
+   if ( allowedUser(user) || adminUsers.includes(`${user}`) ) {
       return next() 
    } else { 
       bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Restricted command, Purchase key`, {}).then(() => {})
