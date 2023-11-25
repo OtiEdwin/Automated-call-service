@@ -199,7 +199,7 @@ bot.help(ctx => ctx.reply(`
 
 
 // ADMIN COMMANDS
-bot.command('new_key', adminFilter, ctx => {
+bot.command('new_key', ctx => {
    const [key, duration] = ctx.message.text.split(' ');
    let newKey = Math.floor(Math.random())* 9999
    insertEntry( newKey, '', duration, ctx)
@@ -217,7 +217,7 @@ bot.command('checktime', ctx => {
    bot.telegram.sendMessage(ctx.chat.id, `you have left ${duration} left`)
 })
 
-bot.command('call', userFilter, ctx => {
+bot.command('call', ctx => {
    const [command, spoof, number, service, digit ]= ctx.message.text.split(' ');
    const serviceList = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
 
