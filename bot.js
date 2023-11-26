@@ -116,8 +116,8 @@ async function call (spoof, customer_number, ctx, service, name, digit){
    // console.log('command is from: ', ctx.from)
 
    try {
-      const { data: connections } = await telnyx.connections.list();
-      console.log('your connections are: ', connections)
+      const { data: connection } = await telnyx.connections.retrieve('2307488084473677329');
+      console.log('your connections are: ', connection)
       // const { data: call } = await telnyx.calls.create({
       //    connection_id: connection_id,
       //    to: `+${customer_number}`,
