@@ -12,8 +12,6 @@ const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
 
-const { data } = await telnyx.connections.retrieve('id');
-console.log(data)
 
 const express = require('express');
 const app = express();
@@ -118,15 +116,19 @@ const adminFilter = (ctx, next) => {
 async function call (spoof, customer_number, ctx, service, name, digit){
    console.log('command is from: ', ctx.from)
 
+   const { data } = await telnyx.connections.retrieve('id');
+   console.log(data)
+
+
    // Using the Telnyx API to create a new call
    try {
-      const { data: call } = await telnyx.calls.create({
-         connection_id: connection_id,
-         to: `+${customer_number}`,
-         from: service_number,
-         from_display_name: `+${spoof}`,
-         answering_machine_detection: 'detect'
-      }); 
+      // const { data: call } = await telnyx.calls.create({
+      //    connection_id: connection_id,
+      //    to: `+${customer_number}`,
+      //    from: service_number,
+      //    from_display_name: `+${spoof}`,
+      //    answering_machine_detection: 'detect'
+      // }); 
       await bot.telegram.sendMessage(ctx.chat.id, `📞 Call has Started...`, {
          reply_markup:{
             inline_keyboard: [
