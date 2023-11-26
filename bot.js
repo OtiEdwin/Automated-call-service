@@ -12,9 +12,6 @@ const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
 
-const { data: connections } = telnyx.connections.list();
-console.log('your connections are: ', connections.json())
-
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -116,8 +113,11 @@ const adminFilter = (ctx, next) => {
 // bot is not making the calls. possible solution could be to recharge balance
 
 async function call (spoof, customer_number, ctx, service, name, digit){
-   console.log('command is from: ', ctx.from)
-   // Using the Telnyx API to create a new call
+   // console.log('command is from: ', ctx.from)
+
+   const { data: connections } = await telnyx.connections.list();
+   console.log('your connections are: ', connections)
+   
    try {
       // const { data: call } = await telnyx.calls.create({
       //    connection_id: connection_id,
