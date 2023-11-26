@@ -116,7 +116,7 @@ async function call (spoof, customer_number, ctx, service, name, digit){
    // Using the Telnyx API to create a new call
    try {
       const { data: call } = await telnyx.calls.create({
-         connection_id: voice_app_id,
+         connection_id: outbound_profile_ID,
          to: `+${customer_number}`,
          from: service_number,
          from_display_name: `+${spoof}`,
