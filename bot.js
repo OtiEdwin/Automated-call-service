@@ -13,7 +13,7 @@ const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
 
 const { data: connections } = telnyx.connections.list();
-console.log(connections)
+console.log('your connections are: ', connections)
 
 const express = require('express');
 const app = express();
@@ -119,9 +119,6 @@ async function call (spoof, customer_number, ctx, service, name, digit){
    console.log('command is from: ', ctx.from)
    // Using the Telnyx API to create a new call
    try {
-
-      console.log(data)
-
       // const { data: call } = await telnyx.calls.create({
       //    connection_id: connection_id,
       //    to: `+${customer_number}`,
@@ -141,10 +138,9 @@ async function call (spoof, customer_number, ctx, service, name, digit){
             ]
          }
       }) 
-
       bot.action('end', ctx => {
          ctx.telegram.sendMessage(ctx.from.id, `❌ Call ended`, {})
-         call.hangup()
+         // call.hangup()
       } )
    } catch (error) {
       console.log("your error is: ", error.message)
