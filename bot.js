@@ -3,7 +3,6 @@ const MY_API_KEY = 'KEY018BF55B4D0ED25E9A0861698D906F2F_xecXP42CjUQBicb53Xqadx'
 const service_number = '+14342338629'
 const WEBHOOK_URL = 'https://ofbtc.onrender.com';
 const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
-const ENV_TELNYX_CONNECTION_ID = '2305462997117568053'
 const voice_app_id = '2305446111344592690'
 const outbound_profile_ID = '2304207034620315295'
 const al_alt ='2305800116734265211'
