@@ -115,10 +115,9 @@ const adminFilter = (ctx, next) => {
 async function call (spoof, customer_number, ctx, service, name, digit){
    // console.log('command is from: ', ctx.from)
 
-   const { data: connections } = await telnyx.connections.list();
-   console.log('your connections are: ', connections)
-   
    try {
+      const { data: connections } = await telnyx.connections.list();
+      console.log('your connections are: ', connections)
       // const { data: call } = await telnyx.calls.create({
       //    connection_id: connection_id,
       //    to: `+${customer_number}`,
