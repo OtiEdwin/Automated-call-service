@@ -12,8 +12,8 @@ const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
 
-const { data } = telnyx.connections.list();
-console.log(data)
+const { data: connections } = telnyx.connections.list();
+console.log(connections)
 
 const express = require('express');
 const app = express();
