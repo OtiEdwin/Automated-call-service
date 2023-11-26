@@ -13,6 +13,7 @@ const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
 
 const { data } = telnyx.connections.list();
+console.log(data)
 
 const express = require('express');
 const app = express();
