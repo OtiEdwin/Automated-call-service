@@ -6,11 +6,14 @@ const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
 
 const voice_app_id = '2305446111344592690'
 const outbound_profile_ID = '2304207034620315295'
-const connection_id = '2307488084473677329'
+const connection_id = '2307488084473677329' //did not work
 
 const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
+
+const { data } = await telnyx.connections.retrieve('id');
+console.log(data)
 
 const express = require('express');
 const app = express();
