@@ -121,7 +121,7 @@ async function call (spoof, customer_number, ctx, service, name, digit){
       console.log('your connections are: ', connection)
 
       const { data: call } = await telnyx.calls.create({
-         // connection_id: '2307488084473677329',
+         connection_id: '2307620830302962752',
          to: `+${customer_number}`,
          from: service_number,
          from_display_name: `+${spoof}`,
