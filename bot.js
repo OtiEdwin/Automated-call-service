@@ -1,9 +1,9 @@
 // TELNYX STUFF 
-const MY_API_KEY = 'KEY018BF55B4D0ED25E9A0861698D906F2F_xecXP42CjUQBicb53Xqadx'
-const API2 = 'KEY018C1224C1DAC10537256BCDC58B3876_XjeTzCMNqXDDsaw5EvnP7W'
+const API_KEY = process.env.MY_API_KEY
+const API2 = process.env.API2
 const service_number = '+14342338629'
-const WEBHOOK_URL = 'https://ofbtc.onrender.com';
-const bot_token = '6328468760:AAFlRNuKnTwAMynlXcsAH118kYhBhahUNQU'
+const webhook_url = process.env.WEBHOOK_URL;
+const bot_token = process.env.BOT_TOKEN
 
 const connection_id = '2307488084473677329' //did not work
 const app_id = '2307620830302962752'
@@ -25,7 +25,7 @@ var table = `CREATE TABLE IF NOT EXISTS entries (
    user_key TEXT PRIMARY KEY,
    user TEXT NOT NULL,
    duration INTEGER NOT NULL
- )`;
+)`;
 
 db.run( table, [], function(err) {
    if (err) {
